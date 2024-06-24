@@ -22,14 +22,18 @@ chrome.storage.local.get('access_token', ({ access_token }) => {
 			window.addEventListener('message', function (event) {
 				const accessToken = event.data.access_token;
 				if (accessToken) {
-					chrome.storage.local.set({ 'access_token': accessToken });
+					chrome.storage.local.set({ 'access_token': accessToken }, () => 
+						{
+							popup.close()
+							window.close()
+						});
 				}
 			});
-			fetch("http://144.24.205.159:8000/users/login").then(res => res.json()).then(url => popup.location.href = url)
+			fetch("https://144.24.205.159:8000/users/login").then(res => res.json()).then(url => popup.location.href = url)
 		});
 	}
 	else {
-		fetch("http://144.24.205.159:8000/users/me", {headers: {Authorization: `Bearer ${access_token}`}}).then(res => res.json()).then(user => {
+		fetch("https://144.24.205.159:8000/users/me", {headers: {Authorization: `Bearer ${access_token}`}}).then(res => res.json()).then(user => {
 			buttons.login.style = "display: none;"
 			buttons.logout.style = "display: block;"
 			buttons.logout.addEventListener('click', onLogout)

@@ -3,24 +3,37 @@
 	"name": "My Extension",
 	"version": "1.0",
 	"description": "My awesome Chrome extension!",
-	"permissions": ["activeTab", "storage", "identity"],
+	"permissions": [
+		"activeTab",
+		"storage",
+		"identity"
+	],
 	"background": {
-		"service_worker": "sw.js"
+		"service_worker": "sw.js",
+		"permissions": [
+			"activeTab",
+			"storage",
+			"identity"
+		]
 	},
 	"content_scripts": [
-	 {
-		"matches": ["https://profile.intra.42.fr/"],
-		"js": ["main_intra.js"]
-	 }
-   ],
-   "action": {
-    "default_popup": "popup/popup.html"
-  },
-  "oauth2": {
-    "client_id": "u-s4t2ud-960d4ad6d84afd68b1c4148446db84c2e99e993a996d6e2b9debc097ffbc5ca8",
-    "scopes": []
-  },
-   "host_permissions": [
-    "http://144.24.205.159:8000/*"
-  ]
-  }
+		{
+			"matches": [
+				"https://profile.intra.42.fr/"
+			],
+			"js": [
+				"main_intra.js"
+			]
+		}
+	],
+	"action": {
+		"default_popup": "popup/popup.html"
+	},
+	"oauth2": {
+		"client_id": "u-s4t2ud-960d4ad6d84afd68b1c4148446db84c2e99e993a996d6e2b9debc097ffbc5ca8",
+		"scopes": []
+	},
+	"host_permissions": [
+		"https://144.24.205.159:8000/*"
+	]
+}
