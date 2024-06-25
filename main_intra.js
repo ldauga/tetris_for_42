@@ -420,9 +420,12 @@ chrome.storage.local.get("me", ({ me }) => {
   chrome.storage.local.onChanged.addListener((changes) => {
     console.log("changes", changes);
     if (changes.me && changes.me.newValue != null) {
+      if (changes.me.oldValue == null) {
+        friendRequestsSent(changes.me.newValue);
+    addFriendToggle();
+  }
       addFriendsList(changes.me.newValue);
       refreshFriendRequestsSentList(changes.me.newValue);
-    // friendRequestsSent(me);
     } else onDisconnect();
   });
   console.log("me", me);

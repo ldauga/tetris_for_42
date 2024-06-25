@@ -13,7 +13,8 @@
 		"permissions": [
 			"activeTab",
 			"storage",
-			"identity"
+			"identity",
+			"tabs"
 		]
 	},
 	"content_scripts": [
@@ -27,7 +28,13 @@
 		}
 	],
 	"action": {
-		"default_popup": "popup/popup.html"
+		"default_popup": "popup/popup.html",
+		"permissions": [
+			"activeTab",
+			"storage",
+			"identity",
+			"tabs"
+		]
 	},
 	"oauth2": {
 		"client_id": "u-s4t2ud-960d4ad6d84afd68b1c4148446db84c2e99e993a996d6e2b9debc097ffbc5ca8",

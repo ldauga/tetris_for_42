@@ -8,29 +8,44 @@ function onLogout() {
 	window.close()
 }
 
+async function getMe(token) {
+	console.log(token)
+	console.log('fetch')
+	return fetch('https://144.24.205.159:8000/users/me', {headers: {
+		Authorization: `bearer ${token}`
+	}}).then(res => res.json()).then(res => chrome.storage.local.set({'me': res})).catch(err => getMe(token))
+}
+
 
 
 chrome.storage.local.get('access_token', ({ access_token }) => {
-
-	console.log(access_token)
-
 	if (!access_token) {
-		console.log(chrome.storage)
 		buttons.login.addEventListener('click', async () => {
-			const popup = window.open('', '_blank', 'width=600,height=600');
+			(async () => {
+				const tab = await chrome.tabs.query({active: true});
+				console.log(tab[0].url);
 
-			window.addEventListener('message', function (event) {
-				const accessToken = event.data.access_token;
-				if (accessToken) {
-					chrome.storage.local.set({ 'access_token': accessToken }, () => 
-						{
-							popup.close()
-							window.close()
+				if (tab[0].url != 'https://profile.intra.42.fr/')
+					chrome.tabs.create({ url: "https://profile.intra.42.fr/" });
+				else {
+					const popup = window.open('', '_blank', 'width=600,height=600');
+					window.addEventListener('message', function (event) {
+						const accessToken = event.data.access_token;
+						if (accessToken) {
+							chrome.storage.local.set({ 'access_token': accessToken }, () => 
+								{
+									getMe(accessToken).then(() => {
+
+										popup.close()
+										window.close()
+									})
+								});
+							}
 						});
-				}
-			});
-			fetch("https://144.24.205.159:8000/users/login").then(res => res.json()).then(url => popup.location.href = url)
-		});
+						popup.location.href = "https://144.24.205.159:8000/users/login"
+					}
+		})();
+	})
 	}
 	else {
 		fetch("https://144.24.205.159:8000/users/me", {headers: {Authorization: `Bearer ${access_token}`}}).then(res => res.json()).then(user => {
@@ -38,6 +53,8 @@ chrome.storage.local.get('access_token', ({ access_token }) => {
 			buttons.logout.style = "display: block;"
 			buttons.logout.addEventListener('click', onLogout)
 			document.getElementById('title').textContent += user.login + ' !'
+			// document.storage.local.set({me: user})
 		}).catch(err => onLogout())
 	}
 })
+	
